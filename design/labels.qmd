@@ -88,3 +88,134 @@ label %>%
               )
 ```
 
+
+
+
+Codigo para hacer las etiquetas de los frascos de semillas monocotiledóneas:
+```{r}
+gs <- "https://docs.google.com/spreadsheets/d/1Z2wL8c_J3_iqwPk3j_OJ5DNsoCdB7GcT_MPGInQqQ3Y/edit?gid=0#gid=0" %>% 
+  as_sheets_id()
+
+fb1 <- gs %>% 
+  range_read(ss = .,sheet = "SM")
+
+#> Google fonts: https://fonts.google.com/
+
+font <- c("Merriweather Sans", "Permanent Marker", "Tillana")
+huito_fonts(font)
+```
+
+```{r}
+label1 <- fb1 %>%
+  label_layout(size = c(1.5, 1.5)
+               , border_color = "forestgreen"
+               , border_width = 0.1
+               ) %>%
+  include_barcode(
+    value = "qrcode"
+    , size = c(1.5, 1.5)
+    , position = c(0.75, 0.75)
+    )
+label1 %>% label_print(mode = "preview")
+```
+
+```{r}
+#| eval: false
+
+label1 %>% 
+  label_print(mode = "complete"
+              , filename = "design/semillas"
+              , paper = c(21, 29.7)
+              , units = "cm"
+              )
+```
+
+Codigo para crear la caratula del trabajo de semillas monocotiledoneas:
+
+```{r}
+gs <- "https://docs.google.com/spreadsheets/d/1Z2wL8c_J3_iqwPk3j_OJ5DNsoCdB7GcT_MPGInQqQ3Y/edit?gid=0#gid=0" %>% 
+  as_sheets_id()
+
+fb2 <- gs %>% 
+  range_read(ss = .,sheet = "integrantes")
+
+#> Google fonts: https://fonts.google.com/
+
+font <- c("Merriweather Sans", "Permanent Marker", "Tillana")
+huito_fonts(font)
+
+
+font <- c("Tinos", "Merriweather Sans", "Permanent Marker", "Tillana")
+huito_fonts(font)
+```
+
+```{r}
+label2 <- fb2 %>%
+label_layout(size = c(12, 8)
+               , border_color = "forestgreen"
+               , border_width = 0.2
+               ) %>%
+include_image(
+    value = "https://app.untrm.edu.pe/UNTRM/assets/images/untrm.png"
+    , size = c(4, 4)
+    , position = c(2.55, 7.3)
+    ) %>%
+include_image(
+    value = "https://raw.githubusercontent.com/VICHAS-234/logos/refs/heads/main/fica.jpeg"
+    , size = c(1.5, 1.5)
+    , position = c(7, 7.3)
+    )%>%
+include_image(
+    value = "https://raw.githubusercontent.com/VICHAS-234/logos/refs/heads/main/ing-agronoma.png"
+    , size = c(1, 1)
+    , position = c(10.5, 7.3)
+    )%>%
+include_text(value = "Muestrario de semillas \n\ monocotiledóneas"
+               , position = c(6, 5.8)
+               , size = 18
+               , fontface = "bold"
+               , color = "black"
+               , font = font[1]
+               ) %>% 
+include_text(value = "CURSO: Producción y Tecnología de Semillas"
+               , position = c(5.9, 4.6)
+               , size = 14
+               , fontface = "bold"
+               , color = "black"
+               , font = font[1]
+               ) %>% 
+include_text(value = "DOCENTE: Flavio Lozano Isla"
+               , position = c(4.45, 3.95)
+               , size = 14
+               , fontface = "bold"
+               , color = "black"
+               , font = font[1]
+               ) %>% 
+include_text(value = "INTEGRANTES:"
+               , position = c(3, 3.25)
+               , size = 14
+               , fontface = "bold"
+               , color = "black"
+               , font = font[1]
+               ) %>% 
+include_text(value = "integrantes"
+               , position = c(6, 1.55)
+               , size = 14
+               , fontface = "bold"
+               , color = "black"
+               , font = font[1]
+               )
+
+label2 %>% label_print(mode = "preview")
+```
+
+```{r}
+#| eval: false
+
+label2 %>% 
+  label_print(mode = "complete"
+              , filename = "design/caratula"
+              , paper = c(21, 29.7)
+              , units = "cm"
+              )
+```
