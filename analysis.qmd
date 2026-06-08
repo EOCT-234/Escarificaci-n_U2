@@ -1,6 +1,6 @@
 ---
-title: ""
-author: ""
+title: "Escarificación"
+author: "Grupo2"
 format:
   html:
     toc: true
@@ -30,27 +30,257 @@ source('https://inkaverse.com/setup.r')
 # Data import
 
 ```{r}
-gs <- "url" %>% 
+gs <- "https://docs.google.com/spreadsheets/d/1rnfI5GubetNELa6mLWgp4UGKzIpJlTmaXZTuS5ZE3CI/edit?pli=1&gid=112042476#gid=112042476" %>% 
   as_sheets_id()
 
 fb <- gs %>% 
   range_read(ss = .,sheet = "fb")
 ```
 
-# Research Objectives
+#Cálculo de índices de germinación
+```{r}
+# Install packages and dependencies
 
-> Matrix URL
+library(GerminaR)
+library(factoextra)
+library(dplyr)
 
-## RO 1
+# Prosopis data set
+
+fb %>% 
+   head(10) %>% 
+   kable(caption = "fb_dataset")
+```
 
 ```{r}
+
+# germination analysis (ten variables)
+
+gsm <- ger_summary(factors = c("escarificacion")
+                   , SeedN = "seeds"
+                   , evalName = "D"
+                   , cumulative = FALSE
+                   , data = fb
+                   )
+
+# Prosopis data set processed
+
+gsm %>% 
+  head(10) %>% 
+  mutate(across(where(is.numeric), ~round(., 2))) %>% 
+  kable(caption = "Function ger_summary performe ten germination indices")
+```
+
+# Anova
+$$y = media + escarificación + error$$
+##Porcentaje de germinación
+```{r}
+# analysis of variance
+
+av_grp <- aov(grp ~ escarificacion, data = gsm)
+Anova(av_grp)
+
+# mean comparison test
+
+mc_grp <- ger_testcomp(aov = av_grp
+                       , comp = c("escarificacion")
+                       , type = "tukey"
+                       )
+
+# data result
+
+mc_grp$table %>% 
+  mutate(
+    across(where(is.numeric), ~ round(., 2))
+  ) %>% 
+  kable(
+    caption = "Comparison of germination percentage among scarification treatments using Tukey test"
+  )
+```
+
+
+```{r}
+#Gráfico
+grp <- mc_grp$table %>% 
+   fplot(data = .
+       , type = "bar"
+       , x = "escarificacion"
+       , y = "grp"
+       , group = NULL
+       , ylimits = c(0, 120, 20)
+       , ylab = "Germinación ('%')"
+       , xlab = "Tratamientos de escarificación"
+       , legend = "top"
+       , sigsize = 4
+       , error = "ste"
+       , sig = "sig"
+       , color = T
+       )
+
+grp$layers[[1]]$aes_params$width <- 0.6
+
+grp
+
+ ggsave(plot =, "desing/grp.jpg")
+```
+
+
+
+##Velocidad de germinación
+```{r}
+# analysis of variance
+
+avgsp <- aov(gsp ~ escarificacion, data = gsm)
+Anova(avgsp)
+
+# mean comparison test
+
+mc_gsp <- ger_testcomp(aov = avgsp
+                       , comp = c("escarificacion")
+                       , type = "tukey"
+                       )
+
+# data result
+
+mc_gsp$table %>% 
+  mutate(
+    across(where(is.numeric), ~ round(., 2))
+  ) %>% 
+  kable(
+    caption = "Comparación de la velocidad de germinación mediante tratamientos de escarificación usando la prubea de Tukey"
+  )
+```
+
+
+```{r}
+#Gráfico
+gsp <- mc_gsp$table %>% 
+   fplot(data = .
+       , type = "bar"
+       , x = "escarificacion"
+       , y = "gsp"
+       , group = NULL
+       , ylimits = c(0, 30, 10)
+       , ylab = "Velocidad de germinación ('%')"
+       , xlab = "Tratamientos de escarificación"
+       , legend = "top"
+       , sigsize = 4
+       , error = "ste"
+       , sig = "sig"
+       , color = T
+       )
+
+gsp$layers[[1]]$aes_params$width <- 0.6
+
+gsp
+
+ ggsave(plot =, "desing/gsp.jpg")
+```
+
+##Tiempo medio de germinación
+```{r}
+## Mean Germination Time (MGT)
+
+# analysis of variance
+
+avmgt <- aov(mgt ~ escarificacion, data = gsm)
+anova(avmgt)
+
+# mean comparison test
+
+mc_mgt <- ger_testcomp(aov = avmgt
+                       , comp = c("escarificacion")
+                       , type = "tukey")
+
+# data result
+
+mc_mgt$table %>% 
+  mutate(
+    across(where(is.numeric), ~ round(., 2))
+  ) %>% 
+  kable(
+    caption = "Comparación del tiempo medio de germinación"
+  )
+```
+
+```{r}
+#Gráfico
+
+# bar graphics for mean germination time
+
+mgt <- mc_mgt$table %>% 
+  fplot(data = .
+       , type = "bar" 
+       , x = "escarificacion"
+       , y = "mgt"
+       , group = NULL
+       , ylimits = c(0,7, 1)
+       , ylab = "Tiempo medio de germinación (días)"
+       , xlab = "Tratamientos de escarificación"
+       , sig = "sig"
+       , error = "ste"
+       , color = T
+       )
+
+mgt$layers[[1]]$aes_params$width <- 0.6
+
+mgt
+
+ ggsave(plot =, "desing/mgt.jpg")
+```
+
+
+##Sincronía de germinación
+```{r}
+# analysis of variance
+
+avsyn <- aov(syn ~ escarificacion, data = gsm)
+anova(avsyn)
+
+# mean comparison test
+
+mc_syn <- ger_testcomp(aov = avsyn
+                       , comp = c("escarificacion")
+                       , type = "tukey")
+
+# data result
+
+mc_syn$table %>% 
+  mutate(
+    across(where(is.numeric), ~ round(., 2))
+  ) %>% 
+  kable(
+    caption = "Comparación de la sincronización"
+  )
+
 
 ```
 
-## RO 2
-
 ```{r}
+#Gráfico
 
+# bar graphics for mean germination time
+
+syn <- mc_syn$table %>% 
+   fplot(data = .
+       , type = "bar" 
+       , x = "escarificacion"
+       , y = "syn"
+       , group = NULL
+       , ylimits = c(0,1.2, 0.2)
+       , ylab = "Índice de sincronía de germinación"
+       , xlab = "Tratamientos de escarificación"
+       , sig = "sig"
+       , error = "ste"
+       , color = T
+       )
+
+
+syn$layers[[1]]$aes_params$width <- 0.6
+
+syn
+
+ ggsave(plot =, "desing/syn.jpg")
 ```
 
 # PCA
@@ -58,79 +288,79 @@ fb <- gs %>%
 ```{r}
 #| eval: false
 
-dtx <- fb
+dtx <- gsm
 
-# str(dtx)
-  
-mv <- PCA(X = dtx, scale.unit = T, graph = F)
+#extracción de factores y variables
 
-fviz_pca_var(mv, col.var = "cos2"
-             , gradient.cols = inti:::paleta()
-             , repel = TRUE
-             )
+names(dtx)
 
-var <- plot.PCA(mv, choix = c("var"), cex=0.7, )
+data_pca <- dtx[, c(4,10, 11, 12, 16)]
 
-ind <- plot.PCA(mv, choix = c("ind")
-                , cex = 0.5
-                , label = "ind"
-                , invisible = "quali"
-                )
+pca_datos <- data_pca %>%
+  group_by(across(1)) %>% 
+  summarise(across(1:4, mean, na.rm = TRUE))
 
-plot <- list(var, ind) %>% 
-  plot_grid(plotlist = ., ncol = 2, labels = "auto") %>% 
-  ggsave(plot = ., "manuscript/PCA.jpg", units = "cm"
-                , width = 30, height = 15)
+#En caso haya unidades NA en la base de datos
 
-plot %>% include_graphics()
+pca_datos[is.na(pca_datos)] <- 0
 
-pcainfo <- factoextra::get_pca(mv)
-
-sink("files/pca.txt")
-cat("\nPrincipal Component Analysis Results\n")
-summary(mv, nbelements = Inf, nb.dec = 2)
-cat("\nCorrelations between variables and dimensions\n")
-mv$cor
-cat("\nContributions of the variables\n")
-mv$contrib
-sink()
-
-cls <- HCPC(mv, graph = F
-            , nb.clust = -1
-            , metric = "euclidean"
-            , method = "ward"
-            )
-
-sink("files/hcpc.txt")
-cat("\nHierarchical Clustering on Principal Components\n")
-cls$call$t$tree
-cls$desc.ind
-cls$desc.var
-sink()
-
-map <- \() {plot(cls, choice = "map", draw.tree = FALSE)}
-cir <- fviz_dend(cls, type = "circular", cex = 0.5)
-
-plot <- list(map, cir) %>% 
-  plot_grid(plotlist = ., ncol = 2, labels = "auto") %>% 
-  ggsave(plot = ., "manuscript/HCPC.jpg", units = "cm"
-                , width = 30, height = 15)
-
-plot %>% include_graphics()
 ```
 
-# References
+  
+```{r}
+library(factoextra)
+library(ggrepel)
+library(cowplot)
 
-Broman, K. W., & Woo, K. H. (2017). Data organization in spreadsheets. The American Statistician, 72(1), 2–10. https://doi.org/10.1080/00031305.2017.1375989
+mv <- PCA(
+  X = pca_datos[, 2:5],
+  scale.unit = TRUE,
+  graph = FALSE
+)
 
-Zuur, A. F., Ieno, E. N., & Elphick, C. S. (2009). A protocol for data exploration to avoid common statistical problems. Methods in Ecology and Evolution, 1(1), 3–14. https://doi.org/10.1111/j.2041-210x.2009.00001.x
+# Variables
+var <- fviz_pca_var(
+  mv,
+  col.var = "cos2",
+  gradient.cols = c("blue", "red", "darkgreen"),
+  repel = TRUE
+)
 
-Francoishusson. (2017, July 13). PCA course using FactoMineR | R-bloggers. R-bloggers. https://www.r-bloggers.com/2017/07/pca-course-using-factominer/
+var
 
-Kozak, M., & Piepho, H. (2017). What’s normal anyway? Residual plots are more telling than significance tests when checking ANOVA assumptions. Journal of Agronomy and Crop Science, 204(1), 86–98. https://doi.org/10.1111/jac.12220
+ind <- fviz_pca_ind(
+  mv,
+  habillage = pca_datos$escarificacion,
+  palette = c("blue", "red", "darkgreen", "orange"),
+  addEllipses = FALSE,
+  repel = TRUE,
+  label = "none", 
+  legend.title = "Tratamientos"
+)
 
-Tanaka, E., & Hui, F. K. C. (2019). Symbolic formulae for linear mixed models. In Communications in computer and information science (pp. 3–21). https://doi.org/10.1007/978-981-15-1960-4_1
+ind
 
-Schielzeth, H., Dingemanse, N. J., Nakagawa, S., Westneat, D. F., Allegue, H., Teplitsky, C., Réale, D., Dochtermann, N. A., Garamszegi, L. Z., & Araya‐Ajoy, Y. G. (2020). Robustness of linear mixed‐effects models to violations of distributional assumptions. Methods in Ecology and Evolution, 11(9), 1141–1152. https://doi.org/10.1111/2041-210x.13434
+ind <- ind +
+  geom_text_repel(
+    aes(
+      x = mv$ind$coord[, 1],
+      y = mv$ind$coord[, 2],
+      label = pca_datos$escarificacion
+    ),
+    size = 4,
+    show.legend = FALSE
+  )
 
-Jambor, H. K. (2025). A checklist for designing and improving the visualization of scientific data. Nature Cell Biology, 27(6), 879–883. https://doi.org/10.1038/s41556-025-01684-z
+# combinar
+plot <- list(var, ind) %>% 
+  plot_grid(plotlist = ., ncol = 2, labels = "auto")
+
+ggsave(
+  plot = plot,
+  filename = "desing/PCA.jpg",
+  units = "cm",
+  width = 30,
+  height = 15
+)
+```
+
