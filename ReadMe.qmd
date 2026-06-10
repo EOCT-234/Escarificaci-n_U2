@@ -1,22 +1,4 @@
-**Manuscript Title**
-
-Author List
-
 ---
-
-## Database
-
-> Google Sheets link: https://docs.google.com/spreadsheets/d/1rnfI5GubetNELa6mLWgp4UGKzIpJlTmaXZTuS5ZE3CI/edit?pli=1&gid=112042476#gid=112042476
-
-## Presentation
-
-> Google Slides link: 
-
-## Presentation
-
-> Google page web link: https://eoct-234.github.io/Escarificaci-n_U2/
----
-
 ⇒ *SciHub*: research pipeline repository
 
 project-root/
@@ -40,8 +22,3 @@ project-root/
                                 # Presentation link (Google Slides)
 
 ---
-
-⇒ *Manuscript template*
-
-> https://docs.google.com/document/d/1B5wtKmWap6MHYjVJqlYy7HMXHWQDoprlz-om2nn777s/edit?usp=sharing
-
